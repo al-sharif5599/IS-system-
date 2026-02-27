@@ -1,0 +1,13 @@
+# Setup virtual environment and install dependencies
+@echo off
+echo Setting up virtual environment...
+python -m venv venv
+echo Activating virtual environment...
+call venv\Scripts\activate.bat
+echo Installing dependencies...
+pip install -r requirements.txt
+echo Running migrations...
+python manage.py migrate
+echo.
+echo Setup complete! Run run.bat to start the servers.
+pause
