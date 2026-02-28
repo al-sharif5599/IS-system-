@@ -133,6 +133,13 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'category', 'images', 'videos']
+
+    def validate(self, attrs):
+        images = attrs.get('images') or []
+        videos = attrs.get('videos') or []
+        if len(images) == 0 and len(videos) == 0:
+            raise serializers.ValidationError("At least one image or video is required.")
+        return attrs
     
     def create(self, validated_data):
         validated_data['owner'] = self.context['request'].user

@@ -357,6 +357,18 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete a product"""
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        if not user.is_authenticated:
+            return queryset.filter(status=Product.Status.APPROVED)
+
+        if user.is_admin:
+            return queryset
+
+        return queryset.filter(Q(status=Product.Status.APPROVED) | Q(owner=user))
     
     def get_serializer_class(self):
         if self.request.method in ['PUT', 'PATCH']:
@@ -374,6 +386,12 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if not request.user.is_admin and instance.owner_id != request.user.id:
+            return Response(
+                {'error': 'You do not have permission to update this product'},
+                status=status.HTTP_403_FORBIDDEN
+            )
         
         if not request.user.is_admin and instance.status == Product.Status.APPROVED:
             return Response(
@@ -382,6 +400,17 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
             )
         
         return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if not request.user.is_admin and instance.owner_id != request.user.id:
+            return Response(
+                {'error': 'You do not have permission to delete this product'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().destroy(request, *args, **kwargs)
 
 
 class MyProductsView(generics.ListAPIView):

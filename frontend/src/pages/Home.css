@@ -21,6 +21,24 @@
   opacity: 0.9;
 }
 
+.home-hero-actions {
+  margin-top: 1.25rem;
+}
+
+.post-product-cta {
+  display: inline-block;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
+  background: white;
+  color: #4338ca;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.post-product-cta:hover {
+  background: #eef2ff;
+}
+
 .home-container {
   max-width: 1200px;
   margin: 0 auto;

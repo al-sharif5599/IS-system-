@@ -71,6 +71,12 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (formData.images.length === 0 && formData.videos.length === 0) {
+      alert('Please upload at least one image or one video.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -174,7 +180,7 @@ const AddProduct = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="images">Product Images *</label>
+            <label htmlFor="images">Product Images</label>
             <div className="file-input-container">
               <input
                 type="file"
@@ -183,7 +189,7 @@ const AddProduct = () => {
                 accept="image/*"
                 multiple
               />
-              <p className="file-hint">Upload multiple images (JPG, PNG, GIF)</p>
+              <p className="file-hint">Upload multiple images (JPG, PNG, GIF). You can also post with video only.</p>
             </div>
             
             {previewImages.length > 0 && (

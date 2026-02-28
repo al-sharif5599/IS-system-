@@ -7,7 +7,7 @@ import Loader from '../components/Loader'
 import './Profile.css'
 
 const Profile = () => {
-  const { user, updateUser } = useAuth()
+  const { user, updateUser, logout } = useAuth()
   const navigate = useNavigate()
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
@@ -86,6 +86,11 @@ const Profile = () => {
     }
   }
 
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'paid': return 'success'
@@ -110,6 +115,14 @@ const Profile = () => {
             <h1>{user?.username}</h1>
             <p>{user?.email}</p>
             <span className="role-badge">{user?.role}</span>
+            <div className="profile-quick-actions">
+              <button className="add-product-btn" onClick={() => navigate('/add-product')}>
+                Post Product
+              </button>
+              <button className="logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
           </div>
         </div>
 

@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useSearchParams } from 'react-router-dom'
 import productsAPI from '../api/products'
 import ProductCard from '../components/ProductCard'
 import Loader from '../components/Loader'
+import { useAuth } from '../context/AuthContext'
 import './Home.css'
 
 const Home = () => {
   const [searchParams] = useSearchParams()
+  const { isAuthenticated } = useAuth()
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
@@ -62,6 +65,11 @@ const Home = () => {
       <div className="home-hero">
         <h1>Welcome to OnlineShop</h1>
         <p>Discover amazing products at great prices</p>
+        <div className="home-hero-actions">
+          <Link to={isAuthenticated ? '/add-product' : '/login'} className="post-product-cta">
+            Post Your Product
+          </Link>
+        </div>
       </div>
 
       <div className="home-container">

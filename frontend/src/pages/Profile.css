@@ -44,6 +44,12 @@
   color: #6b7280;
 }
 
+.profile-quick-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
 .role-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -184,6 +190,21 @@
 
 .add-product-btn:hover {
   background: #059669;
+}
+
+.logout-btn {
+  padding: 0.75rem 1.5rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
 }
 
 .products-list {
@@ -418,6 +439,10 @@
   .profile-header {
     flex-direction: column;
     text-align: center;
+  }
+
+  .profile-quick-actions {
+    justify-content: center;
   }
 
   .form-row {

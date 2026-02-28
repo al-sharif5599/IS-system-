@@ -30,9 +30,9 @@ const Footer = () => {
 
         <div className="footer-section">
           <h4 className="footer-heading">Contact</h4>
-          <p className="footer-text">Email: support@onlineshop.com</p>
-          <p className="footer-text">Phone: +254 700 000 000</p>
-          <p className="footer-text">Nairobi, Kenya</p>
+          <p className="footer-text">Email: sharifmake5599@gmail.com</p>
+          <p className="footer-text">Phone: +255 694019384</p>
+          <p className="footer-text">Tanzania, Zanzibar</p>
         </div>
       </div>
 
