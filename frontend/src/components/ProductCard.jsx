@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { toMediaUrl } from '../config/api'
 import './ProductCard.css'
 
 const ProductCard = ({ product }) => {
@@ -17,17 +18,7 @@ const ProductCard = ({ product }) => {
   }
 
   const getImageUrl = (image) => {
-    if (!image) return 'https://via.placeholder.com/300x200?text=No+Image'
-    // If the image already has a full URL, use it as is
-    if (image.startsWith('http://') || image.startsWith('https://')) {
-      return image
-    }
-    // If it starts with /media/, prepend the backend URL
-    if (image.startsWith('/media/')) {
-      return `http://localhost:8000${image}`
-    }
-    // Otherwise, assume it's a relative path and prepend /media/
-    return `http://localhost:8000/media/${image}`
+    return toMediaUrl(image, 'https://via.placeholder.com/300x200?text=No+Image')
   }
 
   const imageUrl = product.images && product.images.length > 0 

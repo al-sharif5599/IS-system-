@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import productsAPI from '../api/products'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { toMediaUrl } from '../config/api'
 import Loader from '../components/Loader'
 import './ProductDetail.css'
 
@@ -53,26 +54,12 @@ const ProductDetail = () => {
 
   // Helper function to get full image URL
   const getImageUrl = (image) => {
-    if (!image) return 'https://via.placeholder.com/600x400?text=No+Image'
-    if (image.startsWith('http://') || image.startsWith('https://')) {
-      return image
-    }
-    if (image.startsWith('/media/')) {
-      return `http://localhost:8000${image}`
-    }
-    return `http://localhost:8000/media/${image}`
+    return toMediaUrl(image, 'https://via.placeholder.com/600x400?text=No+Image')
   }
 
   // Helper function to get full video URL
   const getVideoUrl = (video) => {
-    if (!video) return ''
-    if (video.startsWith('http://') || video.startsWith('https://')) {
-      return video
-    }
-    if (video.startsWith('/media/')) {
-      return `http://localhost:8000${video}`
-    }
-    return `http://localhost:8000/media/${video}`
+    return toMediaUrl(video, '')
   }
 
   if (loading) return <Loader />

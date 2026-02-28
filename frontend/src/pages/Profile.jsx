@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import ordersAPI from '../api/orders'
 import productsAPI from '../api/products'
+import { toMediaUrl } from '../config/api'
 import Loader from '../components/Loader'
 import './Profile.css'
 
@@ -39,14 +40,7 @@ const Profile = () => {
 
   // Helper function to get full image URL
   const getImageUrl = (image) => {
-    if (!image) return 'https://via.placeholder.com/200x150?text=No+Image'
-    if (image.startsWith('http://') || image.startsWith('https://')) {
-      return image
-    }
-    if (image.startsWith('/media/')) {
-      return `http://localhost:8000${image}`
-    }
-    return `http://localhost:8000/media/${image}`
+    return toMediaUrl(image, 'https://via.placeholder.com/200x150?text=No+Image')
   }
 
   const fetchOrders = async () => {

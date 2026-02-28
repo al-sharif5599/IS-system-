@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { toMediaUrl } from '../config/api'
 import Loader from '../components/Loader'
 import './Cart.css'
 
@@ -18,16 +19,7 @@ const Cart = () => {
 
   // Helper function to get full image URL
   const getImageUrl = (image) => {
-    if (!image || typeof image !== 'string') {
-      return 'https://via.placeholder.com/150?text=No+Image'
-    }
-    if (image.startsWith('http://') || image.startsWith('https://')) {
-      return image
-    }
-    if (image.startsWith('/media/')) {
-      return `http://localhost:8000${image}`
-    }
-    return `http://localhost:8000/media/${image}`
+    return toMediaUrl(image, 'https://via.placeholder.com/150?text=No+Image')
   }
 
   // Get image for cart item with proper fallback
