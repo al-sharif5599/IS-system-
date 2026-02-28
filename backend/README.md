@@ -163,7 +163,7 @@ frontend/
 
 1. Set Root Directory to `backend`
 2. Configure environment variables in Render dashboard (`PYTHON_VERSION=3.12.8` recommended)
-3. Set build command: `pip install -r requirements.txt`
+3. Set build command: `pip install -r requirements.txt && python manage.py collectstatic --noinput`
 4. Set start command: `python manage.py migrate && gunicorn online_shop.wsgi:application`
 
 ## License
