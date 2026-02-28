@@ -161,10 +161,10 @@ frontend/
 
 ## Deployment to Render
 
-1. Create requirements.txt with all dependencies
-2. Configure environment variables in Render dashboard
-3. Set build command: `cd frontend && npm install && npm run build`
-4. Set start command: `cd online_shop && python manage.py migrate && gunicorn online_shop.wsgi`
+1. Set Root Directory to `backend`
+2. Configure environment variables in Render dashboard (`PYTHON_VERSION=3.12.8` recommended)
+3. Set build command: `pip install -r requirements.txt`
+4. Set start command: `python manage.py migrate && gunicorn online_shop.wsgi:application`
 
 ## License
 
