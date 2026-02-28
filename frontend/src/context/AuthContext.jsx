@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
 import authAPI from '../api/auth'
+import { API_BASE_URL } from '../config/api'
 
 const AuthContext = createContext(null)
 
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         return false
       }
       
-      const response = await axios.post('/api/auth/token/refresh/', {
+      const response = await axios.post(`${API_BASE_URL}/auth/token/refresh/`, {
         refresh: refreshTokenValue,
       })
       localStorage.setItem('access_token', response.data.access)

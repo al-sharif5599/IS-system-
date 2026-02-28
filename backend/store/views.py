@@ -43,7 +43,7 @@ class HomeView(APIView):
     permission_classes = [AllowAny]
     
     def get(self, request):
-        return redirect('http://localhost:5173')
+        return redirect(settings.SITE_URL)
 
 
 # ==================== AUTH VIEWS ====================

@@ -1,7 +1,11 @@
 const getApiBaseUrl = () => {
   const raw = import.meta.env.VITE_API_BASE_URL?.trim()
-  if (!raw) return '/api'
-  return raw.replace(/\/+$/, '')
+  if (raw) return raw.replace(/\/+$/, '')
+
+  const backendOrigin = import.meta.env.VITE_BACKEND_ORIGIN?.trim()
+  if (backendOrigin) return `${backendOrigin.replace(/\/+$/, '')}/api`
+
+  return '/api'
 }
 
 export const API_BASE_URL = getApiBaseUrl()
@@ -18,6 +22,12 @@ const getBackendOrigin = () => {
     }
   }
 
+  if (typeof window !== 'undefined') {
+    const { hostname, origin } = window.location
+    if (hostname === 'localhost' || hostname === '127.0.0.1') return 'http://localhost:8000'
+    return origin
+  }
+
   return 'http://localhost:8000'
 }
 
@@ -27,5 +37,6 @@ export const toMediaUrl = (path, fallback = '') => {
   if (!path || typeof path !== 'string') return fallback
   if (path.startsWith('http://') || path.startsWith('https://')) return path
   if (path.startsWith('/media/')) return `${BACKEND_ORIGIN}${path}`
+  if (path.startsWith('media/')) return `${BACKEND_ORIGIN}/${path}`
   return `${BACKEND_ORIGIN}/media/${path.replace(/^\/+/, '')}`
 }

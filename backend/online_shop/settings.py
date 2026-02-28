@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from importlib.util import find_spec
 import os
 from dotenv import load_dotenv
 
@@ -31,6 +32,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-93fd!$zpvz1e9y^2t&t-#$wiz$
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:5173').rstrip('/')
+
+
+def _env_list(name):
+    raw = os.getenv(name, '')
+    return [item.strip() for item in raw.split(',') if item.strip()]
 
 
 # Application definition
@@ -57,7 +64,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -67,6 +73,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+if find_spec('whitenoise') is not None:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 ROOT_URLCONF = 'online_shop.urls'
 
@@ -141,7 +150,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
@@ -181,8 +190,29 @@ SIMPLE_JWT = {
 }
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+_configured_cors_origins = _env_list('CORS_ALLOWED_ORIGINS')
+if _configured_cors_origins:
+    CORS_ALLOWED_ORIGINS = _configured_cors_origins
+elif not DEBUG:
+    CORS_ALLOWED_ORIGINS = [SITE_URL]
+
+_configured_csrf_origins = _env_list('CSRF_TRUSTED_ORIGINS')
+if _configured_csrf_origins:
+    CSRF_TRUSTED_ORIGINS = _configured_csrf_origins
+elif not DEBUG:
+    CSRF_TRUSTED_ORIGINS = [SITE_URL]
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '31536000'))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # Email settings (configure for production)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -205,7 +235,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Site URL for allauth
-SITE_URL = os.getenv('SITE_URL', 'http://localhost:5173')
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
