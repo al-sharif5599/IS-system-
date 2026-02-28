@@ -1,0 +1,44 @@
+/* Custom styling for Django admin pages */
+
+:root {
+  --admin-accent: #0f766e;
+  --admin-accent-dark: #115e59;
+}
+
+#header {
+  background: linear-gradient(90deg, #0f766e, #1f2937);
+}
+
+#header a:link,
+#header a:visited {
+  color: #ffffff;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: #ecfeff;
+  color: #134e4a;
+}
+
+div.breadcrumbs {
+  background: #f8fafc;
+  color: #334155;
+}
+
+button,
+input[type="submit"],
+input[type="button"],
+.button,
+a.button {
+  background: var(--admin-accent);
+  border-color: var(--admin-accent-dark);
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.button:hover,
+a.button:hover {
+  background: var(--admin-accent-dark);
+}
