@@ -39,27 +39,6 @@ export const authAPI = {
     return response.data
   },
 
-  // Change Password
-  changePassword: async (passwordData) => {
-    const response = await api.post('/auth/change-password/', passwordData)
-    return response.data
-  },
-
-  // Request Password Reset
-  requestPasswordReset: async (email) => {
-    const response = await api.post('/auth/password-reset/', { email })
-    return response.data
-  },
-
-  // Confirm Password Reset
-  confirmPasswordReset: async (uidb64, token, newPassword) => {
-    const response = await api.post(`/auth/password-reset/confirm/${uidb64}/${token}/`, {
-      new_password: newPassword,
-      confirm_password: newPassword,
-    })
-    return response.data
-  },
-
   // Get Admin Stats
   getAdminStats: async () => {
     const response = await api.get('/admin/stats/')

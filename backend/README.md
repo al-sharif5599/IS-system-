@@ -5,29 +5,23 @@ A complete full-stack e-commerce platform built with Django REST Framework and R
 ## Features
 
 ### Customer Features
-- User registration and login (with email verification)
-- Google OAuth authentication
-- Password reset functionality
+- User registration and login
 - Browse products with search and category filtering
 - View product details
-- Add products to cart
-- Checkout and place orders
-- Demo Mpesa payment integration
-- View order history and status
+- Post products with images and videos
+- View own posted products and status (pending/approved/rejected)
 
 ### Admin Features
-- Statistics dashboard (total users, products, orders, revenue)
+- Statistics dashboard (users and products)
 - User management (view, block, remove users)
-- Product management (approve/reject products with email notification)
-- Order management
+- Product management (approve pending products)
 
 ## Tech Stack
 
 - **Backend:** Django + Django REST Framework (Python)
 - **Database:** SQLite (default Django database)
-- **Authentication:** JWT + Google OAuth 2.0
+- **Authentication:** JWT
 - **Frontend:** React 18 + Vite
-- **Payment:** Demo M-Pesa Integration
 
 ## Quick Start
 
@@ -113,7 +107,6 @@ Frontend runs at: http://localhost:5173
 - POST `/api/auth/register/` - User registration
 - POST `/api/auth/login/` - JWT login
 - POST `/api/auth/token/refresh/` - Refresh token
-- POST `/api/auth/password-reset/` - Password reset request
 - GET `/api/auth/me/` - Current user info
 
 ### Products
@@ -121,17 +114,7 @@ Frontend runs at: http://localhost:5173
 - POST `/api/products/` - Create product (authenticated)
 - GET `/api/products/my/` - My products
 - POST `/api/products/{id}/approve/` - Approve product (admin)
-- POST `/api/products/{id}/reject/` - Reject product (admin)
 - GET `/api/products/pending/` - Pending products (admin)
-
-### Orders
-- GET `/api/orders/` - List orders
-- POST `/api/orders/checkout/` - Place order
-- POST `/api/orders/{id}/cancel/` - Cancel order
-
-### Payments
-- POST `/api/payments/initiate/` - Initiate M-Pesa payment
-- GET `/api/payments/` - List payments
 
 ### Admin
 - GET `/api/admin/stats/` - Dashboard statistics

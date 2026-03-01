@@ -1,22 +1,16 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import productsAPI from '../api/products'
-import { useAuth } from '../context/AuthContext'
-import { useCart } from '../context/CartContext'
 import { toMediaUrl } from '../config/api'
 import Loader from '../components/Loader'
 import './ProductDetail.css'
 
 const ProductDetail = () => {
   const { id } = useParams()
-  const navigate = useNavigate()
-  const { isAuthenticated } = useAuth()
-  const { addToCart } = useCart()
   
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [addingToCart, setAddingToCart] = useState(false)
   const [selectedImage, setSelectedImage] = useState(0)
 
   useEffect(() => {
@@ -32,23 +26,6 @@ const ProductDetail = () => {
       setError('Product not found')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      navigate('/login')
-      return
-    }
-    
-    setAddingToCart(true)
-    const result = await addToCart(product.id, 1)
-    setAddingToCart(false)
-    
-    if (result.success) {
-      alert('Product added to cart!')
-    } else {
-      alert(result.error)
     }
   }
 
@@ -118,16 +95,6 @@ const ProductDetail = () => {
               ))}
             </div>
           )}
-
-          <div className="product-actions">
-            <button 
-              className="add-to-cart-btn"
-              onClick={handleAddToCart}
-              disabled={addingToCart}
-            >
-              {addingToCart ? 'Adding...' : 'Add to Cart'}
-            </button>
-          </div>
 
           <div className="product-meta">
             <p>Posted: {new Date(product.date_posted).toLocaleDateString()}</p>

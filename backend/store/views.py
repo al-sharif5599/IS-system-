@@ -58,21 +58,10 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        
-        verification_url = f"{settings.SITE_URL}/verify-email/{uid}/{token}/"
-        send_mail(
-            'Verify your email',
-            f'Click the link to verify your email: {verification_url}',
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-            fail_silently=False,
-        )
+        UserProfile.objects.get_or_create(user=user)
         
         return Response({
-            'message': 'User registered successfully. Please check your email to verify your account.',
+            'message': 'User registered successfully. You can now log in.',
             'user_id': user.id
         }, status=status.HTTP_201_CREATED)
 
@@ -220,17 +209,11 @@ class AdminStatsView(APIView):
         
         total_users = User.objects.count()
         total_products = Product.objects.count()
-        total_orders = Order.objects.count()
         
         today_users = User.objects.filter(date_joined__date=today).count()
         today_products = Product.objects.filter(date_posted__date=today).count()
-        today_orders = Order.objects.filter(created_at__date=today).count()
         
         blocked_users = User.objects.filter(is_blocked=True).count()
-        
-        pending_orders = Order.objects.filter(status=Order.Status.PENDING).count()
-        paid_orders = Order.objects.filter(status=Order.Status.PAID).count()
-        cancelled_orders = Order.objects.filter(status=Order.Status.CANCELLED).count()
         
         pending_products = Product.objects.filter(status=Product.Status.PENDING).count()
         approved_products = Product.objects.filter(status=Product.Status.APPROVED).count()
@@ -239,16 +222,9 @@ class AdminStatsView(APIView):
         return Response({
             'total_users': total_users,
             'total_products': total_products,
-            'total_orders': total_orders,
             'today_users': today_users,
             'today_products': today_products,
-            'today_orders': today_orders,
             'blocked_users': blocked_users,
-            'orders_by_status': {
-                'pending': pending_orders,
-                'paid': paid_orders,
-                'cancelled': cancelled_orders
-            },
             'products_by_status': {
                 'pending': pending_products,
                 'approved': approved_products,
@@ -337,6 +313,10 @@ class ProductListView(generics.ListCreateAPIView):
         self.perform_create(serializer)
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        product_status = Product.Status.APPROVED if self.request.user.is_admin else Product.Status.PENDING
+        serializer.save(owner=self.request.user, status=product_status)
     
     def _save_media_file(self, file, folder):
         ext = os.path.splitext(file.name)[1]

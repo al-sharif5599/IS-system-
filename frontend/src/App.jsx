@@ -6,8 +6,6 @@ import Home from './pages/Home'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import Cart from './pages/Cart'
-import Checkout from './pages/Checkout'
 import Profile from './pages/Profile'
 import AdminDashboard from './pages/AdminDashboard'
 import AddProduct from './pages/AddProduct'
@@ -22,15 +20,6 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route 
-            path="/checkout" 
-            element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            } 
-          />
           <Route 
             path="/profile" 
             element={

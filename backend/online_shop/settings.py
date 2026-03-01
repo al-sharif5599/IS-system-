@@ -40,6 +40,10 @@ def _env_list(name):
     return [item.strip() for item in raw.split(',') if item.strip()]
 
 
+def _env_bool(name, default=False):
+    return os.getenv(name, str(default)).strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -72,6 +76,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    # Custom middleware for API CSRF exemption
+    'store.middleware.CSRFExemptAPI',
 ]
 
 if find_spec('whitenoise') is not None:
@@ -108,7 +114,6 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD', 'Al sharif'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
         'PORT': os.getenv('DB_PORT', '5432'),
-        
     }
 }
 
@@ -191,13 +196,25 @@ SIMPLE_JWT = {
 
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 _configured_cors_origins = _env_list('CORS_ALLOWED_ORIGINS')
-if _configured_cors_origins:
+
+if DEBUG:
+    # Allow common development origins
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+    ]
+    # Allow all origins in debug mode (required for development)
+    CORS_ALLOW_ALL_ORIGINS = True
+elif _configured_cors_origins:
     CORS_ALLOWED_ORIGINS = _configured_cors_origins
-elif not DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = False
+else:
     CORS_ALLOWED_ORIGINS = [SITE_URL]
+    CORS_ALLOW_ALL_ORIGINS = False
 
 _configured_csrf_origins = _env_list('CSRF_TRUSTED_ORIGINS')
 if _configured_csrf_origins:
@@ -205,7 +222,10 @@ if _configured_csrf_origins:
 elif not DEBUG:
     CSRF_TRUSTED_ORIGINS = [SITE_URL]
 
-if not DEBUG:
+IS_CLOUD_DEPLOY = any(os.getenv(key) for key in ('RENDER', 'VERCEL', 'RAILWAY_ENVIRONMENT', 'DYNO'))
+FORCE_HTTPS = _env_bool('FORCE_HTTPS', default=IS_CLOUD_DEPLOY)
+
+if not DEBUG and FORCE_HTTPS:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True

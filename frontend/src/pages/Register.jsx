@@ -15,7 +15,6 @@ const Register = () => {
     first_name: '',
     last_name: '',
     phone_number: '',
-    role: 'customer',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -55,7 +54,7 @@ const Register = () => {
         <div className="auth-card">
           <div className="success-message">
             <h2>Registration Successful!</h2>
-            <p>Please check your email to verify your account.</p>
+            <p>Account created successfully. You can now login.</p>
             <Link to="/login" className="auth-btn">
               Go to Login
             </Link>
@@ -138,21 +137,6 @@ const Register = () => {
               onChange={handleChange}
               placeholder="+254 700 000 000"
             />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="role">Account Type *</label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-            >
-              <option value="customer">Customer</option>
-              <option value="admin">Admin (Seller)</option>
-            </select>
-            <p className="form-hint">Select "Admin" if you want to sell products and manage listings.</p>
           </div>
 
           <div className="form-group">

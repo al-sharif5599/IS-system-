@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useCart } from '../context/CartContext'
 import './Navbar.css'
 
 const Navbar = () => {
-  const { user, isAuthenticated, isAdmin, logout } = useAuth()
-  const { cartCount } = useCart()
+  const { isAuthenticated, isAdmin, logout } = useAuth()
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -61,11 +59,6 @@ const Navbar = () => {
             <>
               <Link to="/add-product" className="nav-link" onClick={() => setMenuOpen(false)}>
                 Post Product
-              </Link>
-
-              <Link to="/cart" className="nav-link cart-link" onClick={() => setMenuOpen(false)}>
-                Cart
-                {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
               </Link>
 
               {isAdmin && (

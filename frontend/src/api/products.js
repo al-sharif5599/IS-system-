@@ -78,9 +78,9 @@ export const productsAPI = {
   },
 
   // Reject product (Admin)
-  rejectProduct: async (productId, reason) => {
+  rejectProduct: async (productId, rejectionReason) => {
     const response = await api.post(`/products/${productId}/reject/`, {
-      rejection_reason: reason,
+      rejection_reason: rejectionReason
     })
     return response.data
   },

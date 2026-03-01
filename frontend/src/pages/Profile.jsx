@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import ordersAPI from '../api/orders'
 import productsAPI from '../api/products'
 import { toMediaUrl } from '../config/api'
 import Loader from '../components/Loader'
@@ -10,10 +9,9 @@ import './Profile.css'
 const Profile = () => {
   const { user, updateUser, logout } = useAuth()
   const navigate = useNavigate()
-  const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState('orders')
+  const [activeTab, setActiveTab] = useState('products')
   const [editingProfile, setEditingProfile] = useState(false)
   const [profileData, setProfileData] = useState({
     first_name: '',
@@ -23,7 +21,6 @@ const Profile = () => {
   })
 
   useEffect(() => {
-    fetchOrders()
     fetchMyProducts()
   }, [])
 
@@ -43,23 +40,14 @@ const Profile = () => {
     return toMediaUrl(image, 'https://via.placeholder.com/200x150?text=No+Image')
   }
 
-  const fetchOrders = async () => {
-    try {
-      const data = await ordersAPI.getOrders()
-      setOrders(data)
-    } catch (err) {
-      console.error('Failed to fetch orders:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const fetchMyProducts = async () => {
     try {
       const data = await productsAPI.getMyProducts()
       setProducts(data)
     } catch (err) {
       console.error('Failed to fetch products:', err)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -86,14 +74,10 @@ const Profile = () => {
   }
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'paid': return 'success'
-      case 'pending': return 'warning'
-      case 'cancelled': return 'danger'
-      case 'approved': return 'success'
-      case 'rejected': return 'danger'
-      default: return ''
-    }
+    if (status === 'approved') return 'success'
+    if (status === 'pending') return 'warning'
+    if (status === 'rejected') return 'danger'
+    return ''
   }
 
   if (loading) return <Loader />
@@ -122,12 +106,6 @@ const Profile = () => {
 
         <div className="profile-tabs">
           <button 
-            className={activeTab === 'orders' ? 'active' : ''} 
-            onClick={() => setActiveTab('orders')}
-          >
-            My Orders
-          </button>
-          <button 
             className={activeTab === 'products' ? 'active' : ''} 
             onClick={() => setActiveTab('products')}
           >
@@ -140,33 +118,6 @@ const Profile = () => {
             Profile Settings
           </button>
         </div>
-
-        {activeTab === 'orders' && (
-          <div className="orders-section">
-            <h2>My Orders</h2>
-            {orders.length === 0 ? (
-              <p className="no-orders">No orders yet</p>
-            ) : (
-              <div className="orders-list">
-                {orders.map((order) => (
-                  <div key={order.id} className="order-card">
-                    <div className="order-header">
-                      <span className="order-id">{order.order_id}</span>
-                      <span className={`order-status ${getStatusColor(order.status)}`}>
-                        {order.status}
-                      </span>
-                    </div>
-                    <div className="order-details">
-                      <p>Date: {new Date(order.created_at).toLocaleDateString()}</p>
-                      <p>Items: {order.items?.length || 0}</p>
-                      <p className="order-total">Total: KES {parseFloat(order.total_amount).toLocaleString()}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
 
         {activeTab === 'products' && (
           <div className="products-section">

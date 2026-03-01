@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -43,10 +43,6 @@ urlpatterns = [
     path('api/auth/register/', RegisterView.as_view(), name='register'),
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/auth/verify-email/<str:uidb64>/<str:token>/', VerifyEmailView.as_view(), name='verify-email'),
-    path('api/auth/password-reset/', PasswordResetRequestView.as_view(), name='password-reset'),
-    path('api/auth/password-reset/confirm/<str:uidb64>/<str:token>/', PasswordResetConfirmView.as_view(), name='password-reset-confirm'),
-    path('api/auth/change-password/', ChangePasswordView.as_view(), name='change-password'),
     path('api/auth/me/', CurrentUserView.as_view(), name='current-user'),
     
     # User Management (Admin)
@@ -72,12 +68,12 @@ urlpatterns = [
     path('api/cart/', CartView.as_view(), name='cart'),
     path('api/cart/add/', AddToCartView.as_view(), name='add-to-cart'),
     path('api/cart/items/<int:pk>/', UpdateCartItemView.as_view(), name='update-cart-item'),
-    path('api/cart/items/<int:pk>/delete/', RemoveCartItemView.as_view(), name='remove-cart-item'),
+    path('api/cart/items/<int:pk>/remove/', RemoveCartItemView.as_view(), name='remove-cart-item'),
     path('api/cart/clear/', ClearCartView.as_view(), name='clear-cart'),
     
     # Orders
-    path('api/orders/', OrderListView.as_view(), name='order-list'),
     path('api/orders/checkout/', CheckoutView.as_view(), name='checkout'),
+    path('api/orders/', OrderListView.as_view(), name='order-list'),
     path('api/orders/<str:pk>/', OrderDetailView.as_view(), name='order-detail'),
     path('api/orders/<str:order_id>/cancel/', CancelOrderView.as_view(), name='cancel-order'),
     
@@ -86,6 +82,14 @@ urlpatterns = [
     path('api/payments/callback/', PaymentCallbackView.as_view(), name='payment-callback'),
     path('api/payments/', PaymentListView.as_view(), name='payment-list'),
     path('api/payments/<str:pk>/', PaymentDetailView.as_view(), name='payment-detail'),
+    
+    # Password Reset
+    path('api/auth/password-reset/', PasswordResetRequestView.as_view(), name='password-reset-request'),
+    path('api/auth/password-reset/<str:uidb64>/<str:token>/', PasswordResetConfirmView.as_view(), name='password-reset-confirm'),
+    path('api/auth/change-password/', ChangePasswordView.as_view(), name='change-password'),
+    
+    # Email Verification
+    path('api/auth/verify-email/<str:uidb64>/<str:token>/', VerifyEmailView.as_view(), name='verify-email'),
 ]
 
 # Serve media files in development

@@ -1,22 +1,8 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useCart } from '../context/CartContext'
 import { toMediaUrl } from '../config/api'
 import './ProductCard.css'
 
 const ProductCard = ({ product }) => {
-  const { isAuthenticated } = useAuth()
-  const { addToCart } = useCart()
-
-  const handleAddToCart = async (e) => {
-    e.preventDefault()
-    if (!isAuthenticated) {
-      alert('Please login to add items to cart')
-      return
-    }
-    await addToCart(product.id, 1)
-  }
-
   const getImageUrl = (image) => {
     return toMediaUrl(image, 'https://via.placeholder.com/300x200?text=No+Image')
   }
@@ -49,12 +35,7 @@ const ProductCard = ({ product }) => {
         
         <div className="product-footer">
           <span className="product-price">KES {parseFloat(product.price).toLocaleString()}</span>
-          <button 
-            className="add-to-cart-btn"
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </button>
+          <span className="view-more">View Details</span>
         </div>
       </div>
     </Link>

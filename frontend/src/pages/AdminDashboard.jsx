@@ -84,19 +84,6 @@ const AdminDashboard = () => {
     }
   }
 
-  const handleReject = async (productId) => {
-    const reason = prompt('Enter rejection reason:')
-    if (!reason) return
-    
-    try {
-      await productsAPI.rejectProduct(productId, reason)
-      setPendingProducts(pendingProducts.filter(p => p.id !== productId))
-      fetchData()
-    } catch (err) {
-      alert('Failed to reject product')
-    }
-  }
-
   const handleBlockUser = async (userId) => {
     try {
       await authAPI.blockUser(userId)
@@ -196,33 +183,12 @@ const AdminDashboard = () => {
                 <span className="stat-sub">+{stats.today_products} today</span>
               </div>
               <div className="stat-card">
-                <h3>Total Orders</h3>
-                <p className="stat-value">{stats.total_orders}</p>
-                <span className="stat-sub">+{stats.today_orders} today</span>
-              </div>
-              <div className="stat-card">
                 <h3>Blocked Users</h3>
                 <p className="stat-value">{stats.blocked_users}</p>
               </div>
             </div>
 
             <div className="stats-details">
-              <div className="detail-card">
-                <h3>Orders by Status</h3>
-                <div className="detail-item">
-                  <span>Pending</span>
-                  <span>{stats.orders_by_status?.pending || 0}</span>
-                </div>
-                <div className="detail-item">
-                  <span>Paid</span>
-                  <span>{stats.orders_by_status?.paid || 0}</span>
-                </div>
-                <div className="detail-item">
-                  <span>Cancelled</span>
-                  <span>{stats.orders_by_status?.cancelled || 0}</span>
-                </div>
-              </div>
-
               <div className="detail-card">
                 <h3>Products by Status</h3>
                 <div className="detail-item">
@@ -276,12 +242,6 @@ const AdminDashboard = () => {
                       >
                         Approve
                       </button>
-                      <button 
-                        className="reject-btn"
-                        onClick={() => handleReject(product.id)}
-                      >
-                        Reject
-                      </button>
                     </div>
                   </div>
                 ))}
@@ -320,20 +280,12 @@ const AdminDashboard = () => {
                     </div>
                     <div className="product-actions">
                       {product.status === 'pending' && (
-                        <>
-                          <button 
-                            className="approve-btn"
-                            onClick={() => handleApprove(product.id)}
-                          >
-                            Approve
-                          </button>
-                          <button 
-                            className="reject-btn"
-                            onClick={() => handleReject(product.id)}
-                          >
-                            Reject
-                          </button>
-                        </>
+                        <button 
+                          className="approve-btn"
+                          onClick={() => handleApprove(product.id)}
+                        >
+                          Approve
+                        </button>
                       )}
                     </div>
                   </div>
